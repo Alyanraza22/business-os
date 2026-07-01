@@ -1,0 +1,6 @@
+# Supabase local artifacts
+.branches
+.temp
+
+# Local-only secrets used by config.toml env() references
+.env
