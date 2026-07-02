@@ -127,7 +127,7 @@ export function ProfileForm({ profile, email }: ProfileFormProps) {
           id="timezone"
           name="timezone"
           defaultValue={profile?.timezone ?? "UTC"}
-          className="border-input focus-visible:ring-ring focus-visible:ring-offset-background h-9 w-full rounded-md border bg-transparent px-3 text-sm shadow-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
+          className="border-input focus-visible:border-ring focus-visible:ring-ring/25 h-9 w-full rounded-md border bg-transparent px-3 text-sm transition-[color,border-color,box-shadow] outline-none focus-visible:ring-[3px]"
         >
           {TIMEZONES.map((zone) => (
             <option key={zone} value={zone}>

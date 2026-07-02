@@ -10,16 +10,26 @@ export default function DashboardLoading() {
         description="An overview of your work today."
       />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {["a", "b", "c", "d"].map((id) => (
-          <Card key={id}>
-            <CardContent className="p-5">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="mt-3 h-7 w-20" />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {[0, 1].map((row) => (
+        <div
+          key={row}
+          className={`grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 ${
+            row === 1 ? "mt-4" : ""
+          }`}
+        >
+          {["a", "b", "c", "d"].map((id) => (
+            <Card key={id}>
+              <CardContent className="flex items-start justify-between gap-4 p-5">
+                <div className="flex flex-col gap-2">
+                  <Skeleton className="h-3 w-20" />
+                  <Skeleton className="h-7 w-16" />
+                </div>
+                <Skeleton className="size-9 rounded-md" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ))}
 
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
         {["left", "right"].map((id) => (

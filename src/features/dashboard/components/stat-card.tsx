@@ -23,13 +23,16 @@ export function StatCard({
   decimals,
 }: StatCardProps) {
   return (
-    <Card className="hover:border-primary/30 transition-colors">
-      <CardContent className="flex items-center justify-between gap-4 p-5">
-        <div className="flex flex-col gap-1">
-          <Text variant="muted" className="text-xs tracking-wide uppercase">
+    <Card className="group hover:border-primary/30 transition-colors">
+      <CardContent className="flex items-start justify-between gap-4 p-5">
+        <div className="flex flex-col gap-1.5">
+          <Text
+            variant="muted"
+            className="text-[0.7rem] font-medium tracking-wider uppercase"
+          >
             {label}
           </Text>
-          <span className="text-foreground text-2xl font-semibold tracking-tight">
+          <span className="text-foreground text-2xl font-semibold tracking-tight tabular-nums">
             <AnimatedCounter
               value={value}
               prefix={prefix}
@@ -38,8 +41,8 @@ export function StatCard({
             />
           </span>
         </div>
-        <div className="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">
-          <Icon className="size-5" />
+        <div className="bg-muted text-muted-foreground group-hover:text-foreground flex size-9 items-center justify-center rounded-md">
+          <Icon className="size-[1.15rem]" aria-hidden />
         </div>
       </CardContent>
     </Card>
