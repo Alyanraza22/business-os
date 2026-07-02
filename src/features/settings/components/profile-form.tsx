@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CURRENCIES } from "@/lib/currencies";
-import { type FormState, initialFormState } from "@/lib/form";
+import { initialFormState } from "@/lib/form";
 import type { Profile } from "@/lib/supabase/types";
 
 import { updateProfile } from "../actions";

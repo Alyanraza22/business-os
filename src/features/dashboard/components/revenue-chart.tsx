@@ -18,12 +18,21 @@ import { ChartEmpty, ChartTooltip } from "./chart-primitives";
 interface RevenueChartProps {
   data: ChartPoint[];
   currency: string;
+  emptyMessage?: string;
 }
 
-export function RevenueChart({ data, currency }: RevenueChartProps) {
+export function RevenueChart({
+  data,
+  currency,
+  emptyMessage,
+}: RevenueChartProps) {
   const hasData = data.some((point) => point.value > 0);
   if (!hasData) {
-    return <ChartEmpty message="No earnings recorded in the last 6 months." />;
+    return (
+      <ChartEmpty
+        message={emptyMessage ?? "No earnings recorded in the last 6 months."}
+      />
+    );
   }
 
   return (
