@@ -28,10 +28,10 @@ export function ProjectCard({ project }: { project: Project }) {
   const priority = PRIORITY_META[project.priority];
 
   return (
-    <Card className="group hover:border-primary/40 relative flex flex-col gap-4 overflow-hidden p-5 transition-[border-color,box-shadow] duration-200 hover:shadow-md">
+    <Card className="group hover:border-primary/40 relative flex flex-col gap-4 overflow-hidden p-5 transition-[border-color,box-shadow] duration-200 hover:shadow-sm">
       <span
         aria-hidden
-        className="absolute inset-x-0 top-0 h-1"
+        className="absolute inset-x-0 top-0 h-0.5"
         style={{ backgroundColor: project.color }}
       />
 
@@ -51,7 +51,7 @@ export function ProjectCard({ project }: { project: Project }) {
           <div className="flex min-w-0 flex-col">
             <Link
               href={`/projects/${project.id}`}
-              className="truncate leading-tight font-semibold outline-none hover:underline focus-visible:underline"
+              className="truncate leading-tight font-semibold tracking-tight outline-none hover:underline focus-visible:underline"
             >
               {project.name}
             </Link>

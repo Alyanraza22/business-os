@@ -73,7 +73,7 @@ export function TaskTimer({
       <span
         className={cn(
           "w-16 shrink-0 text-right text-xs tabular-nums",
-          running ? "text-foreground font-medium" : "text-muted-foreground",
+          running ? "text-primary font-semibold" : "text-muted-foreground",
         )}
       >
         {total > 0 || running ? formatClock(total) : "—"}

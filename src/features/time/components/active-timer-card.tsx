@@ -92,7 +92,7 @@ export function ActiveTimerCard({
         </div>
 
         <div className="flex items-center gap-4">
-          <span className="text-3xl font-semibold tabular-nums">
+          <span className="text-primary text-3xl font-semibold tabular-nums">
             {formatClock(elapsed)}
           </span>
           <Button

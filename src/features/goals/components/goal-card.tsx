@@ -193,7 +193,7 @@ export function GoalCard({ goal }: { goal: Goal }) {
 
 function cardClass(pending: boolean) {
   return [
-    "flex flex-col gap-4 p-5 transition-[border-color,box-shadow,opacity] duration-200 hover:border-primary/40 hover:shadow-md",
+    "flex flex-col gap-4 p-5 transition-[border-color,box-shadow,opacity] duration-200 hover:border-primary/40 hover:shadow-sm",
     pending ? "opacity-70" : "",
   ].join(" ");
 }

@@ -31,7 +31,7 @@ export function AppearanceCard() {
         return (
           <Button
             key={option.value}
-            variant={active === option.value ? "secondary" : "outline"}
+            variant={active === option.value ? "primary" : "outline"}
             onClick={() => setTheme(option.value)}
             className="flex-1 gap-2"
           >
