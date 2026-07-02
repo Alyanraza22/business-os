@@ -4,13 +4,12 @@ import { Brand } from "@/components/layout/brand";
 import { Button } from "@/components/ui/button";
 
 const NAV_LINKS = [
-  { label: "Features", href: "#features" },
-  { label: "Workflow", href: "#workflow" },
-  { label: "Why", href: "#why" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Features", href: "/features" },
+  { label: "Blog", href: "/blog" },
+  { label: "FAQ", href: "/#faq" },
 ];
 
-/** Public marketing top bar: brand, section anchors, and auth CTAs. */
+/** Public marketing top bar: brand, primary links, and auth CTAs. */
 export function MarketingHeader() {
   return (
     <header className="border-border bg-background/80 sticky top-0 z-40 border-b backdrop-blur">
@@ -19,13 +18,13 @@ export function MarketingHeader() {
 
         <nav className="hidden flex-1 items-center justify-center gap-8 md:flex">
           {NAV_LINKS.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               className="text-muted-foreground hover:text-foreground text-sm font-medium transition-colors"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
