@@ -3,11 +3,17 @@ import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
-/** App wordmark + logo, links to the dashboard. */
-export function Brand({ className }: { className?: string }) {
+/** App wordmark + logo. Links to the dashboard by default. */
+export function Brand({
+  className,
+  href = "/dashboard",
+}: {
+  className?: string;
+  href?: string;
+}) {
   return (
     <Link
-      href="/dashboard"
+      href={href}
       className={cn(
         "focus-visible:ring-ring flex items-center gap-2 rounded-md outline-none focus-visible:ring-2",
         className,
