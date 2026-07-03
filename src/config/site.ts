@@ -18,6 +18,8 @@ export const siteConfig = {
     "task management",
     "freelancer dashboard",
   ],
+  /** Update to your real support address once a domain mailbox exists. */
+  contactEmail: "hello@businessos.app",
   links: {
     github: "https://github.com",
   },
