@@ -8,7 +8,6 @@ export const siteConfig = {
   description:
     "One unified workspace to manage projects, tasks, time, goals, notes and earnings — fast, modern and beautifully organized.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-  ogImage: "/og.png",
   creator: "Business OS",
   keywords: [
     "productivity",
