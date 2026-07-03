@@ -45,8 +45,8 @@ export function NotesToolbar() {
 
   return (
     <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex flex-1 items-center gap-2">
-        <div className="relative w-full max-w-xs">
+      <div className="flex w-full flex-col gap-2 sm:flex-1 sm:flex-row sm:items-center">
+        <div className="relative w-full sm:max-w-xs">
           <Search className="text-muted-foreground absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
           <Input
             value={query}
@@ -65,7 +65,7 @@ export function NotesToolbar() {
             })
           }
         >
-          <SelectTrigger className="w-36" aria-label="View">
+          <SelectTrigger className="w-full sm:w-36" aria-label="View">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

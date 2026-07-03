@@ -76,7 +76,7 @@ export function ProjectTaskRow({ task }: { task: ProjectTask }) {
   return (
     <div
       className={cn(
-        "flex items-center gap-3 px-4 py-3",
+        "hover:bg-muted/40 flex items-center gap-3 px-4 py-3 transition-colors",
         pending && "opacity-70",
       )}
     >
