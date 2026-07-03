@@ -23,6 +23,18 @@ const FAQS = [
     q: "Does it work on mobile?",
     a: "Yes. The interface is fully responsive, so you can plan and check things off from any device.",
   },
+  {
+    q: "Who is Business OS for?",
+    a: "Anyone running self-directed work — freelancers, developers, designers, agencies, solo founders, students and creators who want their projects, time and goals in one place.",
+  },
+  {
+    q: "Can I track income in my own currency?",
+    a: "Yes. Set your preferred currency in settings and every earning and total across the app respects it.",
+  },
+  {
+    q: "Do I need to install anything?",
+    a: "No. Business OS runs in your browser and can be installed as a lightweight app on desktop or mobile if you prefer.",
+  },
 ];
 
 /** Frequently asked questions using a native, accessible disclosure list. */
