@@ -21,7 +21,7 @@ export function NotesGrid({ notes, filtered }: NotesGridProps) {
         description={
           filtered
             ? "No notes match your search or view."
-            : "Capture ideas, meeting notes, and reminders."
+            : "Notes are your quiet space for ideas, meeting notes and reminders. Capture your first — then pin, archive and search across everything."
         }
         action={
           filtered ? undefined : (

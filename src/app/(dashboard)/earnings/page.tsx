@@ -63,7 +63,11 @@ export default async function EarningsPage({
       </div>
 
       <EarningsToolbar defaultCurrency={summary.currency} />
-      <EarningsList earnings={earnings} filtered={filtered} />
+      <EarningsList
+        earnings={earnings}
+        filtered={filtered}
+        defaultCurrency={summary.currency}
+      />
     </div>
   );
 }

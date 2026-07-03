@@ -21,7 +21,7 @@ export function ProjectsGrid({ projects, filtered }: ProjectsGridProps) {
         description={
           filtered
             ? "Try adjusting your search or status filter."
-            : "Create your first project to start organizing your work."
+            : "Projects are home base for everything you're building. Create one to group deliverables, track real progress, and see where your time goes."
         }
         action={
           filtered ? undefined : (

@@ -21,7 +21,7 @@ export function GoalsGrid({ goals, filtered }: GoalsGridProps) {
         description={
           filtered
             ? "Try adjusting your search or filters."
-            : "Set your first goal and track progress towards it."
+            : "Goals turn intentions into measurable progress. Set a target — a number or a milestone — and watch the bar fill as you close in on it."
         }
         action={
           filtered ? undefined : (

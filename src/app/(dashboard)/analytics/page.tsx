@@ -1,7 +1,16 @@
 import type { Metadata } from "next";
-import { CheckSquare, Clock, ListChecks, Wallet } from "lucide-react";
+import {
+  BarChart3,
+  CheckSquare,
+  Clock,
+  ListChecks,
+  Wallet,
+} from "lucide-react";
+import Link from "next/link";
 
+import { EmptyState } from "@/components/layout/empty-state";
 import { PageHeader } from "@/components/layout/page-header";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HoursChart } from "@/features/dashboard/components/hours-chart";
 import { RevenueChart } from "@/features/dashboard/components/revenue-chart";
@@ -18,6 +27,33 @@ export default async function AnalyticsPage() {
   const { stats, dailyHours, hoursByProject, monthlyRevenue, currency } =
     await getAnalyticsData();
   const symbol = getCurrencySymbol(currency);
+
+  const hasData =
+    stats.lifetimeHours > 0 ||
+    stats.tasksCompleted > 0 ||
+    stats.deliverablesCompleted > 0 ||
+    stats.totalRevenue > 0;
+
+  if (!hasData) {
+    return (
+      <div>
+        <PageHeader
+          title="Analytics"
+          description="Productivity trends across hours, tasks and revenue."
+        />
+        <EmptyState
+          icon={BarChart3}
+          title="Your insights will appear here"
+          description="Analytics turns the work you track into trends — hours over time, time by project, and revenue by month. Track a task or log some time to see your first chart come to life."
+          action={
+            <Button asChild>
+              <Link href="/tasks">Go to Daily Planner</Link>
+            </Button>
+          }
+        />
+      </div>
+    );
+  }
 
   return (
     <div>
