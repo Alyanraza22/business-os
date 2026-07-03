@@ -6,7 +6,7 @@ export function AppSidebar() {
   return (
     <aside className="border-border bg-card hidden w-64 shrink-0 flex-col border-r md:flex">
       <div className="border-border flex h-14 items-center border-b px-5">
-        <Brand />
+        <Brand href="/" />
       </div>
       <div className="flex flex-1 flex-col p-3">
         <SidebarNav />

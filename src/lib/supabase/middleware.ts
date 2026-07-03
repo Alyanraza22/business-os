@@ -2,22 +2,18 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { createServerClient } from "@supabase/ssr";
 
+import { isProtectedPath } from "@/config/routes";
 import { clientEnv } from "@/lib/env";
 import type { Database } from "@/lib/supabase/database.types";
 
-/** Paths reachable without an authenticated session. */
-function isPublicPath(pathname: string): boolean {
-  if (pathname === "/") return true;
-  if (pathname === "/login") return true;
-  if (pathname.startsWith("/auth")) return true;
-  return false;
-}
-
 /**
  * Refreshes the Supabase auth session on every matched request, keeps auth
- * cookies in sync, and enforces route protection:
- *   - unauthenticated users hitting a protected path are sent to /login
+ * cookies in sync, and enforces route protection from a single source
+ * (`isProtectedPath`):
+ *   - unauthenticated users hitting a protected app path are sent to /login
  *   - authenticated users hitting /login are sent to /dashboard
+ *   - all public/marketing pages are reachable regardless of session, and the
+ *     session is preserved when moving between public and app areas
  *
  * Wired up from `src/proxy.ts` (the Next.js 16 successor to middleware.ts).
  */
@@ -53,7 +49,7 @@ export async function updateSession(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  if (!user && !isPublicPath(pathname)) {
+  if (!user && isProtectedPath(pathname)) {
     return redirectPreservingCookies(request, supabaseResponse, "/login");
   }
 

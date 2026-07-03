@@ -33,7 +33,7 @@ export function MobileNav() {
       <SheetContent side="left" className="w-72 p-0">
         <SheetTitle className="sr-only">Navigation</SheetTitle>
         <div className="border-border flex h-14 items-center border-b px-5">
-          <Brand />
+          <Brand href="/" />
         </div>
         <div className="flex flex-1 flex-col p-3">
           <SidebarNav onNavigate={() => setOpen(false)} />
