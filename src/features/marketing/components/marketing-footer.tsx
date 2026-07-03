@@ -73,11 +73,30 @@ export function MarketingFooter() {
       </div>
 
       <div className="border-border border-t">
-        <div className="text-muted-foreground mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-6 py-6 text-xs sm:flex-row">
+        <div className="text-muted-foreground mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-6 py-6 text-xs sm:flex-row">
           <p>
             © {year} {siteConfig.name}. All rights reserved.
           </p>
-          <p>Built as a portfolio-grade product.</p>
+          <nav className="flex items-center gap-5">
+            <Link
+              href="/privacy"
+              className="hover:text-foreground transition-colors"
+            >
+              Privacy
+            </Link>
+            <Link
+              href="/terms"
+              className="hover:text-foreground transition-colors"
+            >
+              Terms
+            </Link>
+            <Link
+              href="/cookies"
+              className="hover:text-foreground transition-colors"
+            >
+              Cookies
+            </Link>
+          </nav>
         </div>
       </div>
     </footer>
