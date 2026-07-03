@@ -6,6 +6,7 @@ import { type FormState, zodFieldErrors } from "@/lib/form";
 import { getSiteURL } from "@/lib/site-url";
 import { createClient } from "@/lib/supabase/server";
 import {
+  changePasswordSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
   signInSchema,
@@ -188,6 +189,63 @@ export async function resetPassword(
     ok: true,
     message: "Your password has been updated. You can now sign in.",
   };
+}
+
+/**
+ * Change the account password from settings. Email/password accounts must
+ * confirm their current password; accounts that only have a social provider
+ * are simply setting a password for the first time.
+ */
+export async function changePassword(
+  _prevState: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const parsed = changePasswordSchema.safeParse({
+    currentPassword: formData.get("currentPassword") || undefined,
+    password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword"),
+  });
+  if (!parsed.success) {
+    return { ok: false, errors: zodFieldErrors(parsed.error) };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user?.email) return { ok: false, message: "You must be signed in." };
+
+  const providers =
+    (user.app_metadata?.providers as string[] | undefined) ?? [];
+  const hasPasswordLogin = providers.includes("email");
+
+  if (hasPasswordLogin) {
+    if (!parsed.data.currentPassword) {
+      return {
+        ok: false,
+        errors: { currentPassword: ["Enter your current password."] },
+      };
+    }
+    const { error: verifyError } = await supabase.auth.signInWithPassword({
+      email: user.email,
+      password: parsed.data.currentPassword,
+    });
+    if (verifyError) {
+      return {
+        ok: false,
+        errors: { currentPassword: ["Current password is incorrect."] },
+      };
+    }
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    password: parsed.data.password,
+  });
+  if (error) {
+    return { ok: false, message: friendlyAuthError(error.message) };
+  }
+
+  return { ok: true, message: "Your password has been updated." };
 }
 
 /**

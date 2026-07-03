@@ -42,6 +42,17 @@ export const resetPasswordSchema = z
     path: ["confirmPassword"],
   });
 
+export const updateAccountSchema = z.object({
+  full_name: z
+    .string()
+    .trim()
+    .min(1, "Please enter your name")
+    .max(80, "Name is too long"),
+  avatar_url: z
+    .union([z.literal(""), z.url("Enter a valid image URL")])
+    .optional(),
+});
+
 export const changePasswordSchema = z
   .object({
     currentPassword: z.string().optional(),

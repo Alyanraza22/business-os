@@ -4,7 +4,47 @@ import { revalidatePath } from "next/cache";
 
 import { type FormState, zodFieldErrors } from "@/lib/form";
 import { createClient } from "@/lib/supabase/server";
+import { updateAccountSchema } from "@/lib/validations/auth";
 import { updateProfileSchema } from "@/lib/validations/profile";
+
+/**
+ * Update display name and avatar. Writes to auth user_metadata (which the
+ * navbar reads) and mirrors the name into the profiles table so both stay
+ * in sync.
+ */
+export async function updateAccount(
+  _prevState: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const parsed = updateAccountSchema.safeParse({
+    full_name: formData.get("full_name"),
+    avatar_url: formData.get("avatar_url") ?? "",
+  });
+  if (!parsed.success) {
+    return { ok: false, errors: zodFieldErrors(parsed.error) };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, message: "You must be signed in." };
+
+  const avatarUrl = parsed.data.avatar_url?.trim() || null;
+  const { error: authError } = await supabase.auth.updateUser({
+    data: { full_name: parsed.data.full_name, avatar_url: avatarUrl },
+  });
+  if (authError) return { ok: false, message: authError.message };
+
+  await supabase
+    .from("profiles")
+    .update({ full_name: parsed.data.full_name })
+    .eq("id", user.id);
+
+  revalidatePath("/settings");
+  revalidatePath("/dashboard");
+  return { ok: true };
+}
 
 function parseForm(formData: FormData) {
   const get = (key: string) => {

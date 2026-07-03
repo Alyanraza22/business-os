@@ -52,10 +52,9 @@ function FieldError({ messages }: { messages?: string[] }) {
 
 interface ProfileFormProps {
   profile: Profile | null;
-  email: string;
 }
 
-export function ProfileForm({ profile, email }: ProfileFormProps) {
+export function ProfileForm({ profile }: ProfileFormProps) {
   const [state, formAction, pending] = useActionState(
     updateProfile,
     initialFormState,
@@ -73,22 +72,6 @@ export function ProfileForm({ profile, email }: ProfileFormProps) {
           {state.message}
         </p>
       ) : null}
-
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="email">Email</Label>
-        <Input id="email" defaultValue={email} disabled readOnly />
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="full_name">Name</Label>
-        <Input
-          id="full_name"
-          name="full_name"
-          defaultValue={profile?.full_name ?? ""}
-          placeholder="Your name"
-        />
-        <FieldError messages={errors.full_name} />
-      </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1.5">
