@@ -5,6 +5,7 @@ import { CtaSection } from "@/features/marketing/components/cta-section";
 import { FaqSection } from "@/features/marketing/components/faq-section";
 import { FeaturesSection } from "@/features/marketing/components/features-section";
 import { Hero } from "@/features/marketing/components/hero";
+import { StructuredData } from "@/features/marketing/components/structured-data";
 import { WhySection } from "@/features/marketing/components/why-section";
 import { WorkflowSection } from "@/features/marketing/components/workflow-section";
 
@@ -25,6 +26,7 @@ export const metadata: Metadata = {
 export default function LandingPage() {
   return (
     <>
+      <StructuredData />
       <Hero />
       <FeaturesSection />
       <WorkflowSection />
