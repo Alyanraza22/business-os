@@ -55,7 +55,7 @@ export default function BlogIndexPage() {
                 <Link
                   key={post.slug}
                   href={`/blog/${post.slug}`}
-                  className="border-border bg-card hover:border-primary/40 focus-visible:border-primary/40 focus-visible:ring-ring/25 group rounded-xl border p-6 transition-colors outline-none focus-visible:ring-[3px]"
+                  className="border-border bg-card hover-lift hover:border-primary/40 focus-visible:border-primary/40 focus-visible:ring-ring/25 group rounded-xl border p-6 outline-none hover:shadow-sm focus-visible:ring-[3px]"
                 >
                   <div className="text-muted-foreground flex items-center gap-2 text-xs">
                     <time dateTime={post.date}>{formatDate(post.date)}</time>

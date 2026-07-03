@@ -28,7 +28,7 @@ export function ProjectCard({ project }: { project: Project }) {
   const priority = PRIORITY_META[project.priority];
 
   return (
-    <Card className="group hover:border-primary/40 relative flex flex-col gap-4 overflow-hidden p-5 transition-[border-color,box-shadow] duration-200 hover:shadow-sm">
+    <Card className="group hover-lift hover:border-primary/40 relative flex flex-col gap-4 overflow-hidden p-5 hover:shadow-sm">
       <span
         aria-hidden
         className="absolute inset-x-0 top-0 h-0.5"

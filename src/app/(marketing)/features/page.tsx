@@ -36,7 +36,7 @@ export default function FeaturesIndexPage() {
               <Link
                 key={feature.slug}
                 href={`/features/${feature.slug}`}
-                className="border-border bg-card hover:border-primary/40 focus-visible:border-primary/40 focus-visible:ring-ring/25 group flex flex-col rounded-xl border p-6 transition-colors outline-none focus-visible:ring-[3px]"
+                className="border-border bg-card hover-lift hover:border-primary/40 focus-visible:border-primary/40 focus-visible:ring-ring/25 group flex flex-col rounded-xl border p-6 outline-none hover:shadow-sm focus-visible:ring-[3px]"
               >
                 <div className="bg-muted text-muted-foreground group-hover:text-primary mb-4 flex size-11 items-center justify-center rounded-md transition-colors">
                   <feature.icon className="size-5" />

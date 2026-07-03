@@ -184,6 +184,19 @@ body {
   background: color-mix(in oklch, var(--primary) 28%, transparent);
 }
 
+/* Subtle premium hover lift for interactive cards. Motion-safe: the
+ * reduced-motion block below neutralizes the transition duration. */
+.hover-lift {
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
 /* Respect users who prefer reduced motion across all animations. */
 @media (prefers-reduced-motion: reduce) {
   *,

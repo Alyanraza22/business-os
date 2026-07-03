@@ -1,3 +1,4 @@
+import { SkipLink } from "@/components/layout/skip-link";
 import { MarketingFooter } from "@/features/marketing/components/marketing-footer";
 import { MarketingHeader } from "@/features/marketing/components/marketing-header";
 
@@ -9,8 +10,11 @@ export default function MarketingLayout({
 }) {
   return (
     <div className="flex min-h-dvh flex-col">
+      <SkipLink />
       <MarketingHeader />
-      <main className="flex-1">{children}</main>
+      <main id="main-content" className="flex-1">
+        {children}
+      </main>
       <MarketingFooter />
     </div>
   );

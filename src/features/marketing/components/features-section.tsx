@@ -20,7 +20,7 @@ export function FeaturesSection() {
             <Link
               key={feature.slug}
               href={`/features/${feature.slug}`}
-              className="border-border bg-card hover:border-primary/40 focus-visible:border-primary/40 focus-visible:ring-ring/25 group rounded-xl border p-5 transition-colors outline-none focus-visible:ring-[3px]"
+              className="border-border bg-card hover-lift hover:border-primary/40 focus-visible:border-primary/40 focus-visible:ring-ring/25 group rounded-xl border p-5 outline-none hover:shadow-sm focus-visible:ring-[3px]"
             >
               <div className="bg-muted text-muted-foreground group-hover:text-primary mb-4 flex size-10 items-center justify-center rounded-md transition-colors">
                 <feature.icon className="size-5" />

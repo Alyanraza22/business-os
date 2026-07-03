@@ -53,7 +53,7 @@ export function NoteCard({ note }: { note: Note }) {
   return (
     <Card
       className={cn(
-        "hover:border-primary/40 flex flex-col gap-2 p-4 transition-[border-color,box-shadow] duration-200 hover:shadow-sm",
+        "hover-lift hover:border-primary/40 flex flex-col gap-2 p-4 hover:shadow-sm",
         pending && "opacity-70",
       )}
     >

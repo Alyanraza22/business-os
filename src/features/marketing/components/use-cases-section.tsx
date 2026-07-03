@@ -87,7 +87,7 @@ export function UseCasesSection() {
           {USE_CASES.map((useCase) => (
             <div
               key={useCase.role}
-              className="border-border bg-card hover:border-primary/40 group flex flex-col rounded-xl border p-5 transition-colors"
+              className="border-border bg-card hover-lift hover:border-primary/40 group flex flex-col rounded-xl border p-5 hover:shadow-sm"
             >
               <div className="bg-muted text-muted-foreground group-hover:text-primary mb-4 flex size-10 items-center justify-center rounded-md transition-colors">
                 <useCase.icon className="size-5" />
