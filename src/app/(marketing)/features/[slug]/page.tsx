@@ -74,7 +74,7 @@ export default async function FeaturePage({ params }: FeaturePageProps) {
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button size="lg" asChild>
-              <Link href="/login">Start free</Link>
+              <Link href="/signup">Start free</Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
               <Link href="/features">See all features</Link>

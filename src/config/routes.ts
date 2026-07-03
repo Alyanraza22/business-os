@@ -24,3 +24,19 @@ export function isProtectedPath(pathname: string): boolean {
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
 }
+
+/**
+ * Auth pages a signed-in user should be redirected away from. Note that
+ * /reset-password is intentionally excluded: the recovery link puts the user
+ * in a temporary session there so they can set a new password.
+ */
+export const AUTH_PAGES = [
+  "/signin",
+  "/signup",
+  "/login",
+  "/forgot-password",
+] as const;
+
+export function isAuthPage(pathname: string): boolean {
+  return (AUTH_PAGES as readonly string[]).includes(pathname);
+}

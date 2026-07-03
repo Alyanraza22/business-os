@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { createServerClient } from "@supabase/ssr";
 
-import { isProtectedPath } from "@/config/routes";
+import { isAuthPage, isProtectedPath } from "@/config/routes";
 import { clientEnv } from "@/lib/env";
 import type { Database } from "@/lib/supabase/database.types";
 
@@ -50,10 +50,10 @@ export async function updateSession(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (!user && isProtectedPath(pathname)) {
-    return redirectPreservingCookies(request, supabaseResponse, "/login");
+    return redirectPreservingCookies(request, supabaseResponse, "/signin");
   }
 
-  if (user && pathname === "/login") {
+  if (user && isAuthPage(pathname)) {
     return redirectPreservingCookies(request, supabaseResponse, "/dashboard");
   }
 

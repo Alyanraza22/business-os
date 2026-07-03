@@ -17,11 +17,11 @@ export const getUser = cache(async () => {
   return user;
 });
 
-/** Require an authenticated user; redirect to /login when absent. */
+/** Require an authenticated user; redirect to /signin when absent. */
 export async function requireUser() {
   const user = await getUser();
   if (!user) {
-    redirect("/login");
+    redirect("/signin");
   }
   return user;
 }

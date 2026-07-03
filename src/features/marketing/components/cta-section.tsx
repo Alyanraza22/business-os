@@ -17,7 +17,7 @@ export function CtaSection() {
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button size="lg" asChild>
-              <Link href="/login">Get started free</Link>
+              <Link href="/signup">Get started free</Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
               <a href="#features">See what&apos;s inside</a>

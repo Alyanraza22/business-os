@@ -18,7 +18,7 @@ export default function AuthCodeErrorPage() {
         expired. Please try again.
       </Text>
       <Button asChild>
-        <Link href="/login">Back to sign in</Link>
+        <Link href="/signin">Back to sign in</Link>
       </Button>
     </main>
   );

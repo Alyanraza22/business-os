@@ -65,10 +65,10 @@ export async function MarketingHeader() {
                 asChild
                 className="hidden sm:inline-flex"
               >
-                <Link href="/login">Sign in</Link>
+                <Link href="/signin">Sign in</Link>
               </Button>
               <Button size="sm" asChild>
-                <Link href="/login">Get started</Link>
+                <Link href="/signup">Get started</Link>
               </Button>
             </>
           )}

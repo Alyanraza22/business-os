@@ -25,13 +25,13 @@ const COLUMNS = [
     title: "Resources",
     links: [
       { label: "Blog", href: "/blog" },
-      { label: "Get started", href: "/login" },
+      { label: "Get started", href: "/signup" },
     ],
   },
   {
     title: "Account",
     links: [
-      { label: "Sign in", href: "/login" },
+      { label: "Sign in", href: "/signin" },
       { label: "Dashboard", href: "/dashboard" },
     ],
   },
