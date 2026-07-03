@@ -32,9 +32,13 @@ export async function signInWithGoogle() {
   }
 }
 
-/** End the session and return to the login screen. */
+/**
+ * End the session and return to the public landing page. The session cookies
+ * are cleared first; the landing page then renders the logged-out navbar
+ * (Sign in / Get started, no avatar) since it reads the session fresh.
+ */
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect("/login");
+  redirect("/");
 }
