@@ -12,10 +12,14 @@ import { EmptyState } from "@/components/layout/empty-state";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AnalyticsInsights } from "@/features/analytics/components/analytics-insights";
 import { HoursChart } from "@/features/dashboard/components/hours-chart";
 import { RevenueChart } from "@/features/dashboard/components/revenue-chart";
 import { StatCard } from "@/features/dashboard/components/stat-card";
-import { getAnalyticsData } from "@/features/analytics/queries";
+import {
+  getAnalyticsData,
+  getAnalyticsInsights,
+} from "@/features/analytics/queries";
 import { getCurrencySymbol } from "@/lib/format";
 
 export const metadata: Metadata = {
@@ -24,8 +28,10 @@ export const metadata: Metadata = {
 };
 
 export default async function AnalyticsPage() {
-  const { stats, dailyHours, hoursByProject, monthlyRevenue, currency } =
-    await getAnalyticsData();
+  const [
+    { stats, dailyHours, hoursByProject, monthlyRevenue, currency },
+    insights,
+  ] = await Promise.all([getAnalyticsData(), getAnalyticsInsights()]);
   const symbol = getCurrencySymbol(currency);
 
   const hasData =
@@ -86,6 +92,10 @@ export default async function AnalyticsPage() {
           prefix={symbol}
           icon={Wallet}
         />
+      </div>
+
+      <div className="mb-6">
+        <AnalyticsInsights insights={insights} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
