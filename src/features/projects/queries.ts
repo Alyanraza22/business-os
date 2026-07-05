@@ -57,6 +57,81 @@ export async function getProjects({
   return data ?? [];
 }
 
+export interface ProjectWithMetrics extends Project {
+  tasksTotal: number;
+  tasksCompleted: number;
+  hoursSpent: number;
+  lastActivity: string;
+}
+
+/**
+ * Projects enriched with card metrics — deliverable counts, hours tracked and
+ * last activity. Aggregates are fetched in bulk (no per-project queries).
+ */
+export async function getProjectsWithMetrics(
+  params: GetProjectsParams = {},
+): Promise<ProjectWithMetrics[]> {
+  const projects = await getProjects(params);
+  if (projects.length === 0) return [];
+
+  const supabase = await createClient();
+  const [tasksRes, logsRes] = await Promise.all([
+    supabase
+      .from("project_tasks")
+      .select("project_id, status, updated_at")
+      .is("deleted_at", null),
+    supabase
+      .from("time_logs")
+      .select("project_id, duration_seconds, started_at")
+      .is("deleted_at", null)
+      .not("duration_seconds", "is", null),
+  ]);
+
+  const taskStats = new Map<
+    string,
+    { total: number; done: number; last: string }
+  >();
+  for (const task of tasksRes.data ?? []) {
+    if (!task.project_id) continue;
+    const stat = taskStats.get(task.project_id) ?? {
+      total: 0,
+      done: 0,
+      last: "",
+    };
+    stat.total += 1;
+    if (task.status === "completed") stat.done += 1;
+    if (task.updated_at > stat.last) stat.last = task.updated_at;
+    taskStats.set(task.project_id, stat);
+  }
+
+  const logStats = new Map<string, { seconds: number; last: string }>();
+  for (const log of logsRes.data ?? []) {
+    if (!log.project_id) continue;
+    const stat = logStats.get(log.project_id) ?? { seconds: 0, last: "" };
+    stat.seconds += log.duration_seconds ?? 0;
+    if (log.started_at > stat.last) stat.last = log.started_at;
+    logStats.set(log.project_id, stat);
+  }
+
+  return projects.map((project) => {
+    const task = taskStats.get(project.id);
+    const log = logStats.get(project.id);
+    const lastActivity = [
+      project.updated_at,
+      task?.last ?? "",
+      log?.last ?? "",
+    ].reduce((latest, value) => (value > latest ? value : latest));
+
+    return {
+      ...project,
+      tasksTotal: task?.total ?? 0,
+      tasksCompleted: task?.done ?? 0,
+      hoursSpent: Math.round((log?.seconds ?? 0) / 360) / 10,
+      lastActivity,
+    };
+  });
+}
+
 /** A single active project by id, or null if not found / not owned. */
 export const getProjectById = cache(
   async (id: string): Promise<Project | null> => {

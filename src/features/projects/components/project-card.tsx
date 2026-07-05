@@ -1,4 +1,5 @@
-import { CalendarDays } from "lucide-react";
+import { differenceInCalendarDays, parseISO } from "date-fns";
+import { CalendarDays, Clock, ListChecks } from "lucide-react";
 import Link from "next/link";
 import { createElement } from "react";
 
@@ -6,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Text } from "@/components/ui/typography";
-import type { Project } from "@/lib/supabase/types";
+import type { ProjectWithMetrics } from "@/features/projects/queries";
 
 import {
   getProjectIcon,
@@ -23,9 +24,22 @@ function formatDate(value: string) {
   });
 }
 
-export function ProjectCard({ project }: { project: Project }) {
+function relativePast(iso: string): string {
+  const days = differenceInCalendarDays(new Date(), parseISO(iso));
+  if (days <= 0) return "today";
+  if (days === 1) return "yesterday";
+  if (days < 7) return `${days}d ago`;
+  if (days < 30) return `${Math.floor(days / 7)}w ago`;
+  return `${Math.floor(days / 30)}mo ago`;
+}
+
+export function ProjectCard({ project }: { project: ProjectWithMetrics }) {
   const status = PROJECT_STATUS_META[project.status];
   const priority = PRIORITY_META[project.priority];
+  const tasksRemaining = Math.max(
+    0,
+    project.tasksTotal - project.tasksCompleted,
+  );
 
   return (
     <Card className="group hover-lift hover:border-primary/40 relative flex flex-col gap-4 overflow-hidden p-5 hover:shadow-sm">
@@ -70,18 +84,39 @@ export function ProjectCard({ project }: { project: Project }) {
         </Text>
       ) : null}
 
-      <div className="mt-auto flex flex-col gap-2">
+      <div className="mt-auto flex flex-col gap-2.5">
         <div className="text-muted-foreground flex items-center justify-between text-xs">
           <span>Progress</span>
-          <span>{project.progress}%</span>
+          <span className="tabular-nums">
+            {project.tasksCompleted}/{project.tasksTotal} deliverables ·{" "}
+            {project.progress}%
+          </span>
         </div>
         <Progress value={project.progress} />
-        {project.deadline ? (
-          <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
-            <CalendarDays className="size-3.5" />
-            {formatDate(project.deadline)}
-          </div>
-        ) : null}
+
+        <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+          <span
+            className="flex items-center gap-1"
+            title="Deliverables done / remaining"
+          >
+            <ListChecks className="size-3.5" />
+            {project.tasksCompleted} done
+            {tasksRemaining > 0 ? ` · ${tasksRemaining} left` : ""}
+          </span>
+          <span className="flex items-center gap-1" title="Time tracked">
+            <Clock className="size-3.5" />
+            {project.hoursSpent}h
+          </span>
+          {project.deadline ? (
+            <span className="flex items-center gap-1" title="Deadline">
+              <CalendarDays className="size-3.5" />
+              {formatDate(project.deadline)}
+            </span>
+          ) : null}
+          <span className="ml-auto shrink-0">
+            Updated {relativePast(project.lastActivity)}
+          </span>
+        </div>
       </div>
     </Card>
   );

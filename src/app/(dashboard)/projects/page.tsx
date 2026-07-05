@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/page-header";
 import { ProjectsGrid } from "@/features/projects/components/projects-grid";
 import { ProjectsToolbar } from "@/features/projects/components/projects-toolbar";
-import { getProjects } from "@/features/projects/queries";
+import { getProjectsWithMetrics } from "@/features/projects/queries";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -18,7 +18,7 @@ export default async function ProjectsPage({
   searchParams,
 }: ProjectsPageProps) {
   const { status, q } = await searchParams;
-  const projects = await getProjects({ status, q });
+  const projects = await getProjectsWithMetrics({ status, q });
   const filtered = Boolean(status || q);
 
   return (

@@ -2,13 +2,13 @@ import { FolderKanban, Plus } from "lucide-react";
 
 import { EmptyState } from "@/components/layout/empty-state";
 import { Button } from "@/components/ui/button";
-import type { Project } from "@/lib/supabase/types";
+import type { ProjectWithMetrics } from "@/features/projects/queries";
 
 import { ProjectCard } from "./project-card";
 import { ProjectDialog } from "./project-dialog";
 
 interface ProjectsGridProps {
-  projects: Project[];
+  projects: ProjectWithMetrics[];
   filtered: boolean;
 }
 
