@@ -1,9 +1,24 @@
 import "server-only";
 
-import { startOfMonthUtc, startOfTodayUtc, startOfWeekUtc } from "@/lib/dates";
+import {
+  dayKey,
+  lastSevenDays,
+  startOfMonthUtc,
+  startOfTodayUtc,
+  startOfWeekUtc,
+} from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
 
-import type { ActiveSession, TimeSession, TimeStats } from "./types";
+import type {
+  ActiveSession,
+  TimeInsights,
+  TimelineBlock,
+  TimeSession,
+  TimeStats,
+} from "./types";
+
+const DAY_MS = 86_400_000;
+const clampPct = (value: number) => Math.max(0, Math.min(100, value));
 
 type EmbeddedRow = {
   id: string;
@@ -113,4 +128,69 @@ export async function getRecentSessions(limit = 40): Promise<TimeSession[]> {
     projectName: row.project?.name ?? null,
     projectColor: row.project?.color ?? null,
   }));
+}
+
+/** Longest/average session, weekly hours and today's session timeline. */
+export async function getTimeInsights(): Promise<TimeInsights> {
+  const supabase = await createClient();
+  const timezone = await getTimezone();
+  const todayStartMs = startOfTodayUtc(timezone).getTime();
+
+  const [allRes, todayRes] = await Promise.all([
+    supabase
+      .from("time_logs")
+      .select("started_at, duration_seconds")
+      .is("deleted_at", null)
+      .not("ended_at", "is", null),
+    supabase
+      .from("time_logs")
+      .select(
+        "started_at, ended_at, task:tasks(title), project:projects(color)",
+      )
+      .is("deleted_at", null)
+      .not("ended_at", "is", null)
+      .gte("started_at", new Date(todayStartMs).toISOString())
+      .order("started_at", { ascending: true }),
+  ]);
+
+  let longestSeconds = 0;
+  let total = 0;
+  let sessionCount = 0;
+  const dayBuckets = new Map<string, number>();
+  for (const log of allRes.data ?? []) {
+    const seconds = log.duration_seconds ?? 0;
+    if (seconds <= 0) continue;
+    sessionCount += 1;
+    total += seconds;
+    if (seconds > longestSeconds) longestSeconds = seconds;
+    const key = dayKey(new Date(log.started_at), timezone);
+    dayBuckets.set(key, (dayBuckets.get(key) ?? 0) + seconds);
+  }
+
+  const weekly = lastSevenDays(timezone).map(({ key, label }) => ({
+    label,
+    value: Math.round((dayBuckets.get(key) ?? 0) / 360) / 10,
+  }));
+
+  const todayRows = (todayRes.data ?? []) as unknown as EmbeddedRow[];
+  const todaysSessions: TimelineBlock[] = todayRows
+    .filter((row) => row.ended_at)
+    .map((row) => {
+      const startMs = new Date(row.started_at).getTime();
+      const endMs = new Date(row.ended_at as string).getTime();
+      return {
+        startPct: clampPct(((startMs - todayStartMs) / DAY_MS) * 100),
+        endPct: clampPct(((endMs - todayStartMs) / DAY_MS) * 100),
+        title: row.task?.title ?? null,
+        color: row.project?.color ?? null,
+      };
+    });
+
+  return {
+    longestSeconds,
+    averageSeconds: sessionCount > 0 ? Math.round(total / sessionCount) : 0,
+    sessionCount,
+    weekly,
+    todaysSessions,
+  };
 }

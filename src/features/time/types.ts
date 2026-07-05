@@ -23,3 +23,19 @@ export interface TimeStats {
   month: number;
   lifetime: number;
 }
+
+/** A completed session positioned across today's 24-hour track (0–100%). */
+export interface TimelineBlock {
+  startPct: number;
+  endPct: number;
+  title: string | null;
+  color: string | null;
+}
+
+export interface TimeInsights {
+  longestSeconds: number;
+  averageSeconds: number;
+  sessionCount: number;
+  weekly: { label: string; value: number }[];
+  todaysSessions: TimelineBlock[];
+}
