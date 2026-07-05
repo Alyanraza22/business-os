@@ -6,9 +6,9 @@ export const TASK_STATUS_META: Record<
   { label: string; badge: BadgeVariant }
 > = {
   todo: { label: "To do", badge: "outline" },
-  in_progress: { label: "In progress", badge: "secondary" },
+  in_progress: { label: "In progress", badge: "default" },
   blocked: { label: "Blocked", badge: "destructive" },
   review: { label: "Review", badge: "warning" },
   completed: { label: "Completed", badge: "success" },
-  cancelled: { label: "Cancelled", badge: "outline" },
+  cancelled: { label: "Cancelled", badge: "secondary" },
 };

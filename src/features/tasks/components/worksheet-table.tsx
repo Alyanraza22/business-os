@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 import type {
   ProjectOption,
   ProjectTaskOption,
@@ -84,7 +86,84 @@ export function WorksheetTable({
             fillColumns={NEW_ROW_FILL}
           />
         </tbody>
+        {tasks.length > 0 ? (
+          <tfoot className="bg-card sticky bottom-0 z-10">
+            <tr className="border-border border-t">
+              <td colSpan={COLUMNS.length} className="px-4 py-3">
+                <EstimateSummary
+                  estimate={tasks.reduce(
+                    (sum, task) => sum + (task.estimated_hours ?? 0),
+                    0,
+                  )}
+                  actual={tasks.reduce(
+                    (sum, task) => sum + task.actualHours,
+                    0,
+                  )}
+                />
+              </td>
+            </tr>
+          </tfoot>
+        ) : null}
       </table>
+    </div>
+  );
+}
+
+/** Visual day-total comparison of estimated vs actual hours. */
+function EstimateSummary({
+  estimate,
+  actual,
+}: {
+  estimate: number;
+  actual: number;
+}) {
+  const over = estimate > 0 && actual > estimate;
+  const pct =
+    estimate > 0
+      ? Math.min(100, (actual / estimate) * 100)
+      : actual > 0
+        ? 100
+        : 0;
+  const diff = actual - estimate;
+
+  return (
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
+      <span className="text-muted-foreground font-medium tracking-wide uppercase">
+        Day total
+      </span>
+      <span className="text-muted-foreground tabular-nums">
+        Est{" "}
+        <span className="text-foreground font-semibold">
+          {estimate.toFixed(1)}h
+        </span>
+      </span>
+      <span className="text-muted-foreground tabular-nums">
+        Actual{" "}
+        <span className="text-foreground font-semibold">
+          {actual.toFixed(1)}h
+        </span>
+      </span>
+      <div className="bg-muted h-1.5 w-32 overflow-hidden rounded-full">
+        <div
+          className={cn(
+            "h-full rounded-full transition-all",
+            over ? "bg-destructive" : "bg-primary",
+          )}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      {estimate > 0 ? (
+        <span
+          className={cn(
+            "font-medium tabular-nums",
+            over ? "text-destructive" : "text-success",
+          )}
+        >
+          {over
+            ? `${diff.toFixed(1)}h over`
+            : `${(estimate - actual).toFixed(1)}h left`}
+        </span>
+      ) : null}
     </div>
   );
 }

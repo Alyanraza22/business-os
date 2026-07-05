@@ -65,6 +65,7 @@ export function NewTaskRow({
       <td className="px-1">
         <input
           ref={inputRef}
+          id="worksheet-new-task"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
           onKeyDown={(event) => {
@@ -73,7 +74,7 @@ export function NewTaskRow({
               create();
             }
           }}
-          placeholder="Add a task and press Enter…"
+          placeholder="Add a task and press Enter…  (press n)"
           disabled={pending}
           className={cn(CELL_INPUT, "placeholder:text-muted-foreground")}
           aria-label="New task name"

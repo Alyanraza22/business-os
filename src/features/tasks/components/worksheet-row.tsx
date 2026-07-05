@@ -131,7 +131,7 @@ export function WorksheetRow({
   return (
     <tr
       className={cn(
-        "border-border hover:bg-muted/40 border-b transition-colors",
+        "border-border hover:bg-muted/40 border-b transition-colors [&>td]:py-1",
         pending && "opacity-70",
       )}
     >
