@@ -1,9 +1,19 @@
+import dynamic from "next/dynamic";
 import type { ReactNode } from "react";
 
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { SkipLink } from "@/components/layout/skip-link";
 import { Topbar } from "@/components/layout/topbar";
+import { IS_DEV } from "@/config/app";
 import { requireUser } from "@/features/auth/auth";
+
+// Developer panel is loaded only in development; the dynamic import lives in a
+// dead branch in production builds, so it is tree-shaken out of the bundle.
+const DebugPanel = IS_DEV
+  ? dynamic(() =>
+      import("@/features/dev/debug-panel").then((m) => m.DebugPanel),
+    )
+  : null;
 
 /**
  * Authenticated application shell. `requireUser` guards every route in this
@@ -23,6 +33,8 @@ export default async function DashboardLayout({
     user.email ??
     "User";
   const avatarUrl = (metadata.avatar_url as string | undefined) ?? null;
+  const providers =
+    (user.app_metadata?.providers as string[] | undefined) ?? [];
 
   return (
     <div className="bg-background flex min-h-dvh">
@@ -34,6 +46,16 @@ export default async function DashboardLayout({
           {children}
         </main>
       </div>
+      {DebugPanel ? (
+        <DebugPanel
+          serverInfo={{
+            userId: user.id,
+            email: user.email ?? "",
+            name,
+            providers,
+          }}
+        />
+      ) : null}
     </div>
   );
 }

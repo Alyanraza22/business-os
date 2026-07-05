@@ -18,6 +18,10 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Build-time diagnostics surfaced by the dev-only debug panel.
+  env: {
+    NEXT_PUBLIC_BUILD_TIME: new Date().toISOString(),
+  },
   // Transform barrel imports into direct ones — faster dev compiles and smaller
   // client bundles for these icon/util/chart libraries.
   experimental: {
