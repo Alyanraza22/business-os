@@ -18,11 +18,24 @@ import type { Project } from "@/lib/supabase/types";
 import { deleteProject } from "../actions";
 import { ProjectDialog } from "./project-dialog";
 
-export function ProjectCardActions({ project }: { project: Project }) {
+export function ProjectCardActions({
+  project,
+  onDelete,
+}: {
+  project: Project;
+  onDelete?: (id: string) => void;
+}) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   async function handleDelete() {
+    // When the parent list owns optimistic removal, delegate to it so the card
+    // disappears instantly; otherwise delete directly.
+    if (onDelete) {
+      setDeleteOpen(false);
+      onDelete(project.id);
+      return;
+    }
     const result = await deleteProject(project.id);
     if (result.ok) {
       toast.success("Project deleted");

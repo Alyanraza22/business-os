@@ -1,9 +1,14 @@
+"use client";
+
 import { FolderKanban, Plus } from "lucide-react";
+import { useOptimistic, useTransition } from "react";
+import { toast } from "sonner";
 
 import { EmptyState } from "@/components/layout/empty-state";
 import { Button } from "@/components/ui/button";
 import type { ProjectWithMetrics } from "@/features/projects/queries";
 
+import { deleteProject } from "../actions";
 import { ProjectCard } from "./project-card";
 import { ProjectDialog } from "./project-dialog";
 
@@ -13,7 +18,24 @@ interface ProjectsGridProps {
 }
 
 export function ProjectsGrid({ projects, filtered }: ProjectsGridProps) {
-  if (projects.length === 0) {
+  const [optimistic, removeOptimistic] = useOptimistic(
+    projects,
+    (state, removedId: string) => state.filter((p) => p.id !== removedId),
+  );
+  const [, startTransition] = useTransition();
+
+  function handleDelete(id: string) {
+    startTransition(async () => {
+      // Instantly remove; if the server rejects, the base list re-syncs and
+      // the card reappears with an error toast.
+      removeOptimistic(id);
+      const result = await deleteProject(id);
+      if (result.ok) toast.success("Project deleted");
+      else toast.error(result.message ?? "Failed to delete project");
+    });
+  }
+
+  if (optimistic.length === 0) {
     return (
       <EmptyState
         icon={FolderKanban}
@@ -41,8 +63,12 @@ export function ProjectsGrid({ projects, filtered }: ProjectsGridProps) {
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-      {projects.map((project) => (
-        <ProjectCard key={project.id} project={project} />
+      {optimistic.map((project) => (
+        <ProjectCard
+          key={project.id}
+          project={project}
+          onDelete={handleDelete}
+        />
       ))}
     </div>
   );

@@ -33,7 +33,13 @@ function relativePast(iso: string): string {
   return `${Math.floor(days / 30)}mo ago`;
 }
 
-export function ProjectCard({ project }: { project: ProjectWithMetrics }) {
+export function ProjectCard({
+  project,
+  onDelete,
+}: {
+  project: ProjectWithMetrics;
+  onDelete?: (id: string) => void;
+}) {
   const status = PROJECT_STATUS_META[project.status];
   const priority = PRIORITY_META[project.priority];
   const tasksRemaining = Math.max(
@@ -75,7 +81,7 @@ export function ProjectCard({ project }: { project: ProjectWithMetrics }) {
             </div>
           </div>
         </div>
-        <ProjectCardActions project={project} />
+        <ProjectCardActions project={project} onDelete={onDelete} />
       </div>
 
       {project.description ? (
