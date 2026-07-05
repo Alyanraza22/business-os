@@ -2,7 +2,7 @@ import "server-only";
 
 import { format, startOfMonth, startOfWeek, startOfYear } from "date-fns";
 
-import { dayKey, zonedNow } from "@/lib/dates";
+import { dayKey, lastSixMonths, zonedNow } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
 import type { Earning, Enums } from "@/lib/supabase/types";
 
@@ -101,4 +101,71 @@ export async function getEarningsSummary(): Promise<EarningsSummary> {
     year: round(year),
     currency,
   };
+}
+
+export interface EarningsInsights {
+  monthly: { label: string; value: number }[];
+  topSource: { name: string; amount: number } | null;
+  byCategory: { category: Enums<"earning_category">; amount: number }[];
+  lifetime: number;
+}
+
+/** 6-month revenue trend, top income source and category breakdown. */
+export async function getEarningsInsights(): Promise<EarningsInsights> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let timezone = "UTC";
+  if (user) {
+    const { data } = await supabase
+      .from("profiles")
+      .select("timezone")
+      .eq("id", user.id)
+      .single();
+    timezone = data?.timezone ?? "UTC";
+  }
+
+  const { data } = await supabase
+    .from("earnings")
+    .select("amount, earned_on, source, category")
+    .is("deleted_at", null);
+
+  const round = (n: number) => Math.round(n * 100) / 100;
+  const monthBuckets = new Map<string, number>();
+  const sourceBuckets = new Map<string, number>();
+  const categoryBuckets = new Map<Enums<"earning_category">, number>();
+  let lifetime = 0;
+
+  for (const entry of data ?? []) {
+    const amount = Number(entry.amount);
+    lifetime += amount;
+    monthBuckets.set(
+      entry.earned_on.slice(0, 7),
+      (monthBuckets.get(entry.earned_on.slice(0, 7)) ?? 0) + amount,
+    );
+    const source = (entry.source || "Other").trim();
+    sourceBuckets.set(source, (sourceBuckets.get(source) ?? 0) + amount);
+    categoryBuckets.set(
+      entry.category,
+      (categoryBuckets.get(entry.category) ?? 0) + amount,
+    );
+  }
+
+  const monthly = lastSixMonths(timezone).map(({ key, label }) => ({
+    label,
+    value: round(monthBuckets.get(key) ?? 0),
+  }));
+
+  let topSource: EarningsInsights["topSource"] = null;
+  for (const [name, amount] of sourceBuckets) {
+    if (!topSource || amount > topSource.amount) topSource = { name, amount };
+  }
+
+  const byCategory = [...categoryBuckets.entries()]
+    .map(([category, amount]) => ({ category, amount: round(amount) }))
+    .sort((a, b) => b.amount - a.amount);
+
+  return { monthly, topSource, byCategory, lifetime: round(lifetime) };
 }
