@@ -9,12 +9,21 @@ import {
   Wallet,
 } from "lucide-react";
 
-import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  InsightsCard,
+  UpcomingDeadlines,
+} from "@/features/dashboard/components/dashboard-insights";
 import { HoursChart } from "@/features/dashboard/components/hours-chart";
-import { RevenueChart } from "@/features/dashboard/components/revenue-chart";
+import { QuickActions } from "@/features/dashboard/components/quick-actions";
 import { StatCard } from "@/features/dashboard/components/stat-card";
-import { getDashboardData } from "@/features/dashboard/queries";
+import { RevenueChart } from "@/features/dashboard/components/revenue-chart";
+import { TodaysFocus } from "@/features/dashboard/components/todays-focus";
+import { WelcomeHeader } from "@/features/dashboard/components/welcome-header";
+import {
+  getDashboardData,
+  getDashboardOverview,
+} from "@/features/dashboard/queries";
 import { getCurrencySymbol } from "@/lib/format";
 
 export const metadata: Metadata = {
@@ -23,16 +32,45 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const { stats, weeklyHours, monthlyRevenue, currency } =
-    await getDashboardData();
+  const [{ stats, weeklyHours, monthlyRevenue, currency }, overview] =
+    await Promise.all([getDashboardData(), getDashboardOverview()]);
   const symbol = getCurrencySymbol(currency);
+  const dateLabel = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
     <div>
-      <PageHeader
-        title="Dashboard"
-        description="An overview of your work today."
+      <WelcomeHeader
+        greeting={overview.greeting}
+        firstName={overview.firstName}
+        dateLabel={dateLabel}
+        streakDays={overview.streakDays}
+        attentionCount={overview.attentionCount}
       />
+
+      <QuickActions />
+
+      <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <TodaysFocus
+            tasks={overview.todayTasks}
+            total={overview.todayTotal}
+            done={overview.todayDone}
+          />
+        </div>
+        <div className="flex flex-col gap-4">
+          <InsightsCard
+            weekCompletedTasks={overview.weekCompletedTasks}
+            weekHours={stats.weekHours}
+            mostActiveProject={overview.mostActiveProject}
+            nextDeadline={overview.nextDeadline}
+          />
+          <UpcomingDeadlines items={overview.upcomingDeadlines} />
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
