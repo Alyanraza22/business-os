@@ -28,7 +28,13 @@ import { cn } from "@/lib/utils";
 import { deleteNote, setNoteArchived, setNotePinned } from "../actions";
 import { NoteDialog } from "./note-dialog";
 
-export function NoteCard({ note }: { note: Note }) {
+export function NoteCard({
+  note,
+  onDelete,
+}: {
+  note: Note;
+  onDelete?: (id: string) => void;
+}) {
   const [pending, startTransition] = useTransition();
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -41,6 +47,11 @@ export function NoteCard({ note }: { note: Note }) {
   }
 
   async function handleDelete() {
+    if (onDelete) {
+      setDeleteOpen(false);
+      onDelete(note.id);
+      return;
+    }
     const result = await deleteNote(note.id);
     if (result.ok) {
       toast.success("Note deleted");

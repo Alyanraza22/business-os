@@ -39,7 +39,13 @@ function formatDate(value: string) {
   });
 }
 
-export function GoalCard({ goal }: { goal: Goal }) {
+export function GoalCard({
+  goal,
+  onDelete,
+}: {
+  goal: Goal;
+  onDelete?: (id: string) => void;
+}) {
   const [pending, startTransition] = useTransition();
   const [current, setCurrent] = useState(goal.current);
   const [editOpen, setEditOpen] = useState(false);
@@ -85,6 +91,11 @@ export function GoalCard({ goal }: { goal: Goal }) {
   }
 
   async function handleDelete() {
+    if (onDelete) {
+      setDeleteOpen(false);
+      onDelete(goal.id);
+      return;
+    }
     const result = await deleteGoal(goal.id);
     if (result.ok) {
       toast.success("Goal deleted");

@@ -30,13 +30,24 @@ function formatDate(value: string) {
   });
 }
 
-export function EarningRow({ earning }: { earning: Earning }) {
+export function EarningRow({
+  earning,
+  onDelete,
+}: {
+  earning: Earning;
+  onDelete?: (id: string) => void;
+}) {
   const [pending, startTransition] = useTransition();
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const category = EARNING_CATEGORY_META[earning.category];
 
   function handleDelete() {
+    if (onDelete) {
+      setDeleteOpen(false);
+      onDelete(earning.id);
+      return Promise.resolve();
+    }
     return new Promise<void>((resolve) => {
       startTransition(async () => {
         const result = await deleteEarning(earning.id);
