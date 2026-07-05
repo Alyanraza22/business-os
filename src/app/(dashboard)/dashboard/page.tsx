@@ -14,10 +14,12 @@ import {
   InsightsCard,
   UpcomingDeadlines,
 } from "@/features/dashboard/components/dashboard-insights";
-import { HoursChart } from "@/features/dashboard/components/hours-chart";
+import {
+  HoursChart,
+  RevenueChart,
+} from "@/features/dashboard/components/lazy-charts";
 import { QuickActions } from "@/features/dashboard/components/quick-actions";
 import { StatCard } from "@/features/dashboard/components/stat-card";
-import { RevenueChart } from "@/features/dashboard/components/revenue-chart";
 import { TodaysFocus } from "@/features/dashboard/components/todays-focus";
 import { WelcomeHeader } from "@/features/dashboard/components/welcome-header";
 import {

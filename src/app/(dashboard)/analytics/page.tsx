@@ -13,8 +13,10 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AnalyticsInsights } from "@/features/analytics/components/analytics-insights";
-import { HoursChart } from "@/features/dashboard/components/hours-chart";
-import { RevenueChart } from "@/features/dashboard/components/revenue-chart";
+import {
+  HoursChart,
+  RevenueChart,
+} from "@/features/dashboard/components/lazy-charts";
 import { StatCard } from "@/features/dashboard/components/stat-card";
 import {
   getAnalyticsData,

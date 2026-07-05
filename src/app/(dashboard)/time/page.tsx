@@ -4,7 +4,7 @@ import { CalendarDays, Clock, History, TrendingUp } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heading } from "@/components/ui/typography";
-import { HoursChart } from "@/features/dashboard/components/hours-chart";
+import { HoursChart } from "@/features/dashboard/components/lazy-charts";
 import { StatCard } from "@/features/dashboard/components/stat-card";
 import { ActiveTimerCard } from "@/features/time/components/active-timer-card";
 import { SessionInsights } from "@/features/time/components/session-insights";

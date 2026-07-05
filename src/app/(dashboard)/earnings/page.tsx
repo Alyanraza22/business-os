@@ -3,7 +3,7 @@ import { CalendarDays, CalendarRange, Coins, TrendingUp } from "lucide-react";
 
 import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RevenueChart } from "@/features/dashboard/components/revenue-chart";
+import { RevenueChart } from "@/features/dashboard/components/lazy-charts";
 import { StatCard } from "@/features/dashboard/components/stat-card";
 import { EarningsBreakdown } from "@/features/earnings/components/earnings-breakdown";
 import { EarningsList } from "@/features/earnings/components/earnings-list";
