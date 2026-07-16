@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Inter } from "next/font/google";
 
+import { ServiceWorkerRegistrar } from "@/components/pwa/service-worker";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/providers/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -78,6 +79,7 @@ export default function RootLayout({
         >
           <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
           <Toaster />
+          <ServiceWorkerRegistrar />
         </ThemeProvider>
       </body>
     </html>
