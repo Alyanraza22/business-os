@@ -1,5 +1,5 @@
 import { differenceInCalendarDays, parseISO } from "date-fns";
-import { CalendarDays, Clock, ListChecks } from "lucide-react";
+import { CalendarDays, Clock, ListChecks, Plus } from "lucide-react";
 import Link from "next/link";
 import { createElement } from "react";
 
@@ -91,24 +91,40 @@ export function ProjectCard({
       ) : null}
 
       <div className="mt-auto flex flex-col gap-2.5">
-        <div className="text-muted-foreground flex items-center justify-between text-xs">
-          <span>Progress</span>
-          <span className="tabular-nums">
-            {project.tasksCompleted}/{project.tasksTotal} deliverables ·{" "}
-            {project.progress}%
-          </span>
-        </div>
-        <Progress value={project.progress} />
+        {project.tasksTotal === 0 ? (
+          // Progress is deliverable-driven, so 0% is meaningless without any.
+          // Point the user at the action that actually unlocks it.
+          <Link
+            href={`/projects/${project.id}/tasks`}
+            className="border-primary/30 text-primary hover:bg-primary/10 flex items-center justify-center gap-1.5 rounded-md border border-dashed px-3 py-2 text-xs font-medium transition-colors"
+          >
+            <Plus className="size-3.5" />
+            Add deliverables to track progress
+          </Link>
+        ) : (
+          <>
+            <div className="text-muted-foreground flex items-center justify-between text-xs">
+              <span>Progress</span>
+              <span className="tabular-nums">
+                {project.tasksCompleted}/{project.tasksTotal} deliverables ·{" "}
+                {project.progress}%
+              </span>
+            </div>
+            <Progress value={project.progress} />
+          </>
+        )}
 
         <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-          <span
-            className="flex items-center gap-1"
-            title="Deliverables done / remaining"
-          >
-            <ListChecks className="size-3.5" />
-            {project.tasksCompleted} done
-            {tasksRemaining > 0 ? ` · ${tasksRemaining} left` : ""}
-          </span>
+          {project.tasksTotal > 0 ? (
+            <span
+              className="flex items-center gap-1"
+              title="Deliverables done / remaining"
+            >
+              <ListChecks className="size-3.5" />
+              {project.tasksCompleted} done
+              {tasksRemaining > 0 ? ` · ${tasksRemaining} left` : ""}
+            </span>
+          ) : null}
           <span className="flex items-center gap-1" title="Time tracked">
             <Clock className="size-3.5" />
             {project.hoursSpent}h

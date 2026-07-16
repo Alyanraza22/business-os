@@ -143,11 +143,21 @@ export async function getAnalyticsData(): Promise<AnalyticsData> {
   };
 }
 
+/** A single weighted input to the productivity score. */
+export interface ScoreFactor {
+  label: string;
+  value: number;
+  weight: number;
+}
+
 export interface AnalyticsInsights {
   productivityScore: number;
+  /** Transparent breakdown of what actually fed the score. */
+  scoreFactors: ScoreFactor[];
   completionRate: number;
   avgDailyHours: number;
   goalCompletion: number;
+  goalsConfigured: boolean;
   mostProductiveProject: string | null;
   weekHours: number;
   weekChangePct: number | null;
@@ -271,17 +281,33 @@ export async function getAnalyticsInsights(): Promise<AnalyticsInsights> {
     return Math.round(((current - previous) / previous) * 100);
   };
 
-  const consistency = Math.min(100, (activeDays.size / 30) * 100);
-  const hoursTarget = Math.min(100, (weekHours / 40) * 100);
+  const consistency = Math.round(Math.min(100, (activeDays.size / 30) * 100));
+  const focus = Math.round(Math.min(100, (weekHours / 40) * 100));
+
+  // Adaptive score: only modules the user actually uses are counted, so an
+  // unused module can never drag the score down. Weights are renormalized
+  // across whatever is active.
+  const factors: ScoreFactor[] = [
+    { label: "Execution", value: completionRate, weight: 4 },
+    { label: "Consistency", value: consistency, weight: 3 },
+    { label: "Focus", value: focus, weight: 3 },
+  ];
+  if (totalGoals > 0) {
+    factors.push({ label: "Goal progress", value: goalCompletion, weight: 2 });
+  }
+
+  const totalWeight = factors.reduce((sum, f) => sum + f.weight, 0);
   const productivityScore = Math.round(
-    0.4 * completionRate + 0.3 * consistency + 0.3 * hoursTarget,
+    factors.reduce((sum, f) => sum + f.value * f.weight, 0) / totalWeight,
   );
 
   return {
     productivityScore,
+    scoreFactors: factors,
     completionRate,
     avgDailyHours,
     goalCompletion,
+    goalsConfigured: totalGoals > 0,
     mostProductiveProject,
     weekHours,
     weekChangePct: pctChange(weekSeconds, lastWeekSeconds),

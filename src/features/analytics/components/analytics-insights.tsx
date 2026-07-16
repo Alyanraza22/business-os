@@ -71,6 +71,27 @@ export function AnalyticsInsights({ insights }: { insights: Insights }) {
           <p className="text-muted-foreground mt-2 text-xs leading-relaxed">
             {scoreLabel(insights.productivityScore)}
           </p>
+
+          {/* Transparent breakdown — only the modules in use are counted. */}
+          <ul className="border-border mt-4 flex flex-col gap-1.5 border-t pt-3">
+            {insights.scoreFactors.map((factor) => (
+              <li
+                key={factor.label}
+                className="flex items-center justify-between gap-2 text-xs"
+              >
+                <span className="text-muted-foreground">{factor.label}</span>
+                <span className="text-foreground font-medium tabular-nums">
+                  {factor.value}%
+                </span>
+              </li>
+            ))}
+          </ul>
+          {!insights.goalsConfigured ? (
+            <p className="text-muted-foreground/70 mt-2 text-[0.7rem] leading-relaxed">
+              Goals aren&apos;t set up yet, so they don&apos;t affect your
+              score.
+            </p>
+          ) : null}
         </CardContent>
       </Card>
 

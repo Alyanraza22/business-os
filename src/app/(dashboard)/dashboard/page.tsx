@@ -26,6 +26,8 @@ import {
   getDashboardData,
   getDashboardOverview,
 } from "@/features/dashboard/queries";
+import { OnboardingChecklist } from "@/features/onboarding/components/onboarding-checklist";
+import { getOnboardingProgress } from "@/features/onboarding/queries";
 import { getCurrencySymbol } from "@/lib/format";
 
 export const metadata: Metadata = {
@@ -34,8 +36,12 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const [{ stats, weeklyHours, monthlyRevenue, currency }, overview] =
-    await Promise.all([getDashboardData(), getDashboardOverview()]);
+  const [{ stats, weeklyHours, monthlyRevenue, currency }, overview, setup] =
+    await Promise.all([
+      getDashboardData(),
+      getDashboardOverview(),
+      getOnboardingProgress(),
+    ]);
   const symbol = getCurrencySymbol(currency);
   const dateLabel = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -54,6 +60,8 @@ export default async function DashboardPage() {
       />
 
       <QuickActions />
+
+      <OnboardingChecklist progress={setup} />
 
       <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2">

@@ -1,8 +1,18 @@
 import type { Metadata } from "next";
-import { CalendarDays, CalendarRange, Coins, TrendingUp } from "lucide-react";
+import {
+  CalendarDays,
+  CalendarRange,
+  Coins,
+  Plus,
+  TrendingUp,
+  Wallet,
+} from "lucide-react";
 
+import { EmptyState } from "@/components/layout/empty-state";
 import { PageHeader } from "@/components/layout/page-header";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EarningDialog } from "@/features/earnings/components/earning-dialog";
 import { RevenueChart } from "@/features/dashboard/components/lazy-charts";
 import { StatCard } from "@/features/dashboard/components/stat-card";
 import { EarningsBreakdown } from "@/features/earnings/components/earnings-breakdown";
@@ -35,6 +45,36 @@ export default async function EarningsPage({
   ]);
   const symbol = getCurrencySymbol(summary.currency);
   const filtered = Boolean(category || q);
+  // With no income at all, four zeroes + an empty chart + an empty breakdown is
+  // just noise — show one guiding state instead.
+  const hasEarnings = insights.lifetime > 0 || earnings.length > 0;
+
+  if (!hasEarnings && !filtered) {
+    return (
+      <div>
+        <PageHeader
+          title="Earnings"
+          description="Log income and track your revenue."
+        />
+        <EmptyState
+          icon={Wallet}
+          title="Turn your work into a revenue picture"
+          description="Record what you earn by source and category. Business OS then charts your revenue trend, finds your top income source, and — combined with tracked time — reveals which projects are actually worth your hours."
+          action={
+            <EarningDialog
+              defaultCurrency={summary.currency}
+              trigger={
+                <Button>
+                  <Plus />
+                  Record your first earning
+                </Button>
+              }
+            />
+          }
+        />
+      </div>
+    );
+  }
 
   return (
     <div>
