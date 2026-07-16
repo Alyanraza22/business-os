@@ -10,6 +10,7 @@ export const PROTECTED_PREFIXES = [
   "/dashboard",
   "/projects",
   "/tasks", // Daily Planner
+  "/focus", // Distraction-free execution mode
   "/time",
   "/goals",
   "/earnings",

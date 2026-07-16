@@ -9,6 +9,7 @@ import { StatCard } from "@/features/dashboard/components/stat-card";
 import { ActiveTimerCard } from "@/features/time/components/active-timer-card";
 import { SessionInsights } from "@/features/time/components/session-insights";
 import { SessionsList } from "@/features/time/components/sessions-list";
+import { TimeIntelligence } from "@/features/time/components/time-intelligence";
 import { TodaysTimeline } from "@/features/time/components/todays-timeline";
 import {
   getActiveSession,
@@ -91,6 +92,13 @@ export default async function TimeTrackerPage() {
             sessionCount={insights.sessionCount}
           />
         </div>
+
+        <TimeIntelligence
+          deepWorkHours={insights.deepWorkHours}
+          deepWorkShare={insights.deepWorkShare}
+          contextSwitches={insights.contextSwitches}
+          fragmentedSessions={insights.fragmentedSessions}
+        />
 
         <div className="flex flex-col gap-3">
           <Heading size="h4">Recent sessions</Heading>

@@ -19,6 +19,10 @@ import type {
 } from "./types";
 
 const DAY_MS = 86_400_000;
+/** A focus block has to clear 25 uninterrupted minutes to count as deep work. */
+const DEEP_WORK_MIN_SECONDS = 25 * 60;
+/** Anything under 5 minutes reads as a fragment rather than real focus. */
+const FRAGMENT_MAX_SECONDS = 5 * 60;
 const clampPct = (value: number) => Math.max(0, Math.min(100, value));
 
 type EmbeddedRow = {
@@ -127,12 +131,15 @@ export async function getTimeInsights(): Promise<TimeInsights> {
   const timezone = await getTimezone();
   const todayStartMs = startOfTodayUtc(timezone).getTime();
 
+  const weekStartMs = startOfWeekUtc(timezone).getTime();
+
   const [allRes, todayRes] = await Promise.all([
     supabase
       .from("time_logs")
-      .select("started_at, duration_seconds")
+      .select("started_at, duration_seconds, project_id")
       .is("deleted_at", null)
-      .not("ended_at", "is", null),
+      .not("ended_at", "is", null)
+      .order("started_at", { ascending: true }),
     supabase
       .from("time_logs")
       .select(
@@ -148,6 +155,14 @@ export async function getTimeInsights(): Promise<TimeInsights> {
   let total = 0;
   let sessionCount = 0;
   const dayBuckets = new Map<string, number>();
+
+  // Time intelligence, scoped to this week.
+  let weekSeconds = 0;
+  let deepWorkSeconds = 0;
+  let contextSwitches = 0;
+  let fragmentedSessions = 0;
+  let previousProject: string | null | undefined;
+
   for (const log of allRes.data ?? []) {
     const seconds = log.duration_seconds ?? 0;
     if (seconds <= 0) continue;
@@ -156,6 +171,18 @@ export async function getTimeInsights(): Promise<TimeInsights> {
     if (seconds > longestSeconds) longestSeconds = seconds;
     const key = dayKey(new Date(log.started_at), timezone);
     dayBuckets.set(key, (dayBuckets.get(key) ?? 0) + seconds);
+
+    if (new Date(log.started_at).getTime() >= weekStartMs) {
+      weekSeconds += seconds;
+      // A session only counts as deep work once it clears 25 uninterrupted
+      // minutes — below that it's a check-in, not a focus block.
+      if (seconds >= DEEP_WORK_MIN_SECONDS) deepWorkSeconds += seconds;
+      if (seconds < FRAGMENT_MAX_SECONDS) fragmentedSessions += 1;
+      if (previousProject !== undefined && previousProject !== log.project_id) {
+        contextSwitches += 1;
+      }
+      previousProject = log.project_id;
+    }
   }
 
   const weekly = lastSevenDays(timezone).map(({ key, label }) => ({
@@ -183,5 +210,10 @@ export async function getTimeInsights(): Promise<TimeInsights> {
     sessionCount,
     weekly,
     todaysSessions,
+    deepWorkHours: Math.round(deepWorkSeconds / 360) / 10,
+    deepWorkShare:
+      weekSeconds > 0 ? Math.round((deepWorkSeconds / weekSeconds) * 100) : 0,
+    contextSwitches,
+    fragmentedSessions,
   };
 }

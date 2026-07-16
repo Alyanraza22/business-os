@@ -75,8 +75,8 @@ export function NextUpCard({ data }: { data: CommandCenter }) {
           </div>
 
           <Button size="sm" asChild className="shrink-0">
-            <Link href="/tasks">
-              Start
+            <Link href="/focus">
+              Focus
               <ArrowRight className="size-3.5" />
             </Link>
           </Button>

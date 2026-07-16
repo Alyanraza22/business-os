@@ -38,4 +38,12 @@ export interface TimeInsights {
   sessionCount: number;
   weekly: { label: string; value: number }[];
   todaysSessions: TimelineBlock[];
+  /** Hours this week spent in uninterrupted sessions of 25 minutes or more. */
+  deepWorkHours: number;
+  /** Share of this week's tracked time that qualifies as deep work (0–100). */
+  deepWorkShare: number;
+  /** Times this week the active project changed between consecutive sessions. */
+  contextSwitches: number;
+  /** Sessions under 5 minutes this week — a proxy for fragmented attention. */
+  fragmentedSessions: number;
 }
