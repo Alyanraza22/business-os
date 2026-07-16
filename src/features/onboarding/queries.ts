@@ -3,6 +3,7 @@ import "server-only";
 import { getUser } from "@/features/auth/auth";
 import { dayKey } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
+import { getUserSettings } from "@/lib/user-settings";
 
 export interface OnboardingStep {
   id: string;
@@ -88,12 +89,8 @@ export async function getOnboardingProgress(): Promise<OnboardingProgress> {
   const user = await getUser();
   if (!user) return finalize(build({}));
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("timezone")
-    .eq("id", user.id)
-    .single();
-  const todayKey = dayKey(new Date(), profile?.timezone ?? "UTC");
+  const { timezone } = await getUserSettings();
+  const todayKey = dayKey(new Date(), timezone);
 
   const [projects, deliverables, planned, timers, completed, goals, earnings] =
     await Promise.all([

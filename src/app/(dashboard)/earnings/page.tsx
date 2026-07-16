@@ -23,6 +23,8 @@ import {
   getEarningsInsights,
   getEarningsSummary,
 } from "@/features/earnings/queries";
+import { ProfitabilityTable } from "@/features/profitability/components/profitability-table";
+import { getProjectProfitability } from "@/features/profitability/queries";
 import { getCurrencySymbol } from "@/lib/format";
 
 export const metadata: Metadata = {
@@ -38,10 +40,11 @@ export default async function EarningsPage({
   searchParams,
 }: EarningsPageProps) {
   const { category, q } = await searchParams;
-  const [earnings, summary, insights] = await Promise.all([
+  const [earnings, summary, insights, profitability] = await Promise.all([
     getEarnings({ category, q }),
     getEarningsSummary(),
     getEarningsInsights(),
+    getProjectProfitability(),
   ]);
   const symbol = getCurrencySymbol(summary.currency);
   const filtered = Boolean(category || q);
@@ -129,6 +132,10 @@ export default async function EarningsPage({
           lifetime={insights.lifetime}
           currency={summary.currency}
         />
+      </div>
+
+      <div className="mb-6">
+        <ProfitabilityTable report={profitability} />
       </div>
 
       <EarningsToolbar defaultCurrency={summary.currency} />

@@ -10,6 +10,7 @@ import {
   zonedNow,
 } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
+import { getUserSettings } from "@/lib/user-settings";
 import type { ChartPoint } from "@/features/dashboard/types";
 
 export interface AnalyticsData {
@@ -37,21 +38,7 @@ function lastNDays(timeZone: string, n: number) {
 
 export async function getAnalyticsData(): Promise<AnalyticsData> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  let timezone = "UTC";
-  let currency = "USD";
-  if (user) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("timezone, currency")
-      .eq("id", user.id)
-      .single();
-    timezone = data?.timezone ?? "UTC";
-    currency = data?.currency ?? "USD";
-  }
+  const { timezone, currency } = await getUserSettings();
 
   const revenueFrom = format(
     startOfMonth(subMonths(zonedNow(timezone), 5)),
@@ -173,19 +160,7 @@ const DAY_MS = 86_400_000;
  */
 export async function getAnalyticsInsights(): Promise<AnalyticsInsights> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  let tz = "UTC";
-  if (user) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("timezone")
-      .eq("id", user.id)
-      .single();
-    tz = data?.timezone ?? "UTC";
-  }
+  const { timezone: tz } = await getUserSettings();
 
   const now = zonedNow(tz);
   const weekStartMs = startOfWeekUtc(tz).getTime();

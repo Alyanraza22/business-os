@@ -20,6 +20,7 @@ import {
   zonedNow,
 } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
+import { getUserSettings } from "@/lib/user-settings";
 import { getUser } from "@/features/auth/auth";
 
 import type {
@@ -43,14 +44,7 @@ export async function getDashboardData(): Promise<DashboardData> {
     return emptyDashboard("USD");
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("timezone, currency")
-    .eq("id", user.id)
-    .single();
-
-  const tz = profile?.timezone ?? "UTC";
-  const currency = profile?.currency ?? "USD";
+  const { timezone: tz, currency } = await getUserSettings();
 
   const todayStart = startOfTodayUtc(tz);
   const weekStart = startOfWeekUtc(tz);
@@ -179,12 +173,7 @@ export async function getDashboardOverview(): Promise<DashboardOverview> {
   const user = await getUser();
   if (!user) return emptyOverview();
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("timezone")
-    .eq("id", user.id)
-    .single();
-  const tz = profile?.timezone ?? "UTC";
+  const { timezone: tz } = await getUserSettings();
 
   const now = zonedNow(tz);
   const hour = now.getHours();

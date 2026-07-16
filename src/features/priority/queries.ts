@@ -3,6 +3,7 @@ import "server-only";
 import { getUser } from "@/features/auth/auth";
 import { dayKey } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
+import { getUserSettings } from "@/lib/user-settings";
 
 import { rankTasks, type PriorityTaskInput, type ScoredTask } from "./engine";
 
@@ -33,12 +34,8 @@ export async function getCommandCenter(): Promise<CommandCenter> {
   const user = await getUser();
   if (!user) return EMPTY;
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("timezone")
-    .eq("id", user.id)
-    .single();
-  const todayKey = dayKey(new Date(), profile?.timezone ?? "UTC");
+  const { timezone } = await getUserSettings();
+  const todayKey = dayKey(new Date(), timezone);
 
   const [tasksRes, projectsRes] = await Promise.all([
     supabase

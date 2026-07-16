@@ -5,6 +5,7 @@ import { format, startOfMonth, startOfWeek, startOfYear } from "date-fns";
 import { dayKey, lastSixMonths, zonedNow } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
 import type { Earning, Enums } from "@/lib/supabase/types";
+import { getUserSettings } from "@/lib/user-settings";
 
 interface GetEarningsParams {
   category?: string;
@@ -53,21 +54,7 @@ export interface EarningsSummary {
 /** Income totals for today / week / month / year (calendar dates, tz-aware). */
 export async function getEarningsSummary(): Promise<EarningsSummary> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  let currency = "USD";
-  let timezone = "UTC";
-  if (user) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("currency, timezone")
-      .eq("id", user.id)
-      .single();
-    currency = data?.currency ?? "USD";
-    timezone = data?.timezone ?? "UTC";
-  }
+  const { currency, timezone } = await getUserSettings();
 
   const now = zonedNow(timezone);
   const todayStr = dayKey(new Date(), timezone);
@@ -113,19 +100,7 @@ export interface EarningsInsights {
 /** 6-month revenue trend, top income source and category breakdown. */
 export async function getEarningsInsights(): Promise<EarningsInsights> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  let timezone = "UTC";
-  if (user) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("timezone")
-      .eq("id", user.id)
-      .single();
-    timezone = data?.timezone ?? "UTC";
-  }
+  const { timezone } = await getUserSettings();
 
   const { data } = await supabase
     .from("earnings")

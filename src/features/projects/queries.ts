@@ -5,6 +5,7 @@ import { cache } from "react";
 import { startOfMonthUtc, startOfTodayUtc, startOfWeekUtc } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
 import type { Enums, Project } from "@/lib/supabase/types";
+import { getUserSettings } from "@/lib/user-settings";
 
 export interface ProjectHours {
   total: number;
@@ -155,19 +156,7 @@ export async function getProjectHours(
   projectId: string,
 ): Promise<ProjectHours> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  let timezone = "UTC";
-  if (user) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("timezone")
-      .eq("id", user.id)
-      .single();
-    timezone = data?.timezone ?? "UTC";
-  }
+  const { timezone } = await getUserSettings();
 
   const { data: logs } = await supabase
     .from("time_logs")

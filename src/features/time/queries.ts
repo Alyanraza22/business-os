@@ -8,6 +8,7 @@ import {
   startOfWeekUtc,
 } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
+import { getUserSettings } from "@/lib/user-settings";
 
 import type {
   ActiveSession,
@@ -31,17 +32,7 @@ type EmbeddedRow = {
 };
 
 async function getTimezone(): Promise<string> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return "UTC";
-  const { data } = await supabase
-    .from("profiles")
-    .select("timezone")
-    .eq("id", user.id)
-    .single();
-  return data?.timezone ?? "UTC";
+  return (await getUserSettings()).timezone;
 }
 
 /** Total tracked hours: today / this week / this month / lifetime (tz-aware). */
