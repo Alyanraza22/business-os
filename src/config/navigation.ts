@@ -1,6 +1,7 @@
 import {
   BarChart3,
   CalendarRange,
+  ClipboardCheck,
   FolderKanban,
   LayoutDashboard,
   Notebook,
@@ -32,6 +33,7 @@ export const primaryNav: NavItem[] = [
   { label: "Goals", href: "/goals", icon: Target },
   { label: "Earnings", href: "/earnings", icon: Wallet },
   { label: "Analytics", href: "/analytics", icon: BarChart3 },
+  { label: "Review", href: "/review", icon: ClipboardCheck },
   { label: "Notes", href: "/notes", icon: Notebook },
 ];
 

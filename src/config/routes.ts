@@ -15,6 +15,7 @@ export const PROTECTED_PREFIXES = [
   "/goals",
   "/earnings",
   "/analytics",
+  "/review",
   "/notes",
   "/settings",
 ] as const;

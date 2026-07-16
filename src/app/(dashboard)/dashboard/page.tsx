@@ -26,6 +26,8 @@ import {
   getDashboardData,
   getDashboardOverview,
 } from "@/features/dashboard/queries";
+import { BusinessHealthCard } from "@/features/health/components/business-health-card";
+import { getBusinessHealth } from "@/features/health/queries";
 import { OnboardingChecklist } from "@/features/onboarding/components/onboarding-checklist";
 import { getOnboardingProgress } from "@/features/onboarding/queries";
 import { NextUpCard } from "@/features/priority/components/next-up-card";
@@ -43,11 +45,13 @@ export default async function DashboardPage() {
     overview,
     setup,
     commandCenter,
+    health,
   ] = await Promise.all([
     getDashboardData(),
     getDashboardOverview(),
     getOnboardingProgress(),
     getCommandCenter(),
+    getBusinessHealth(),
   ]);
   const symbol = getCurrencySymbol(currency);
   const dateLabel = new Date().toLocaleDateString("en-US", {
@@ -81,6 +85,7 @@ export default async function DashboardPage() {
           />
         </div>
         <div className="flex flex-col gap-4">
+          <BusinessHealthCard health={health} />
           <InsightsCard
             weekCompletedTasks={overview.weekCompletedTasks}
             weekHours={stats.weekHours}
