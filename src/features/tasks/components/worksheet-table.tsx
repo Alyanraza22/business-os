@@ -18,21 +18,31 @@ interface WorksheetTableProps {
   defaultProjectId: string;
 }
 
+// Phones can't carry ten columns, so the sheet narrows to what you actually
+// need to act on — check it off, see it, see its status and time it. The rest
+// returns at md. `HIDDEN_ON_MOBILE` is mirrored by the row cells.
+export const HIDDEN_ON_MOBILE = "hidden md:table-cell";
+
 const COLUMNS = [
   { id: "complete", label: "", className: "w-10" },
-  { id: "task", label: "Task", className: "min-w-[13rem]" },
-  { id: "project", label: "Project", className: "w-40" },
-  { id: "project_task", label: "Project Task", className: "w-44" },
+  { id: "task", label: "Task", className: "min-w-[10rem] md:min-w-[13rem]" },
+  { id: "project", label: "Project", className: `w-40 ${HIDDEN_ON_MOBILE}` },
+  {
+    id: "project_task",
+    label: "Project Task",
+    className: `w-44 ${HIDDEN_ON_MOBILE}`,
+  },
   { id: "status", label: "Status", className: "w-36" },
-  { id: "priority", label: "Priority", className: "w-32" },
-  { id: "estimate", label: "Est. h", className: "w-20" },
+  { id: "priority", label: "Priority", className: `w-32 ${HIDDEN_ON_MOBILE}` },
+  { id: "estimate", label: "Est. h", className: `w-20 ${HIDDEN_ON_MOBILE}` },
   { id: "actual", label: "Actual h", className: "w-20" },
-  { id: "notes", label: "Notes", className: "min-w-[10rem]" },
+  {
+    id: "notes",
+    label: "Notes",
+    className: `min-w-[10rem] ${HIDDEN_ON_MOBILE}`,
+  },
   { id: "actions", label: "", className: "w-12" },
 ];
-
-// Non-editable leading columns in the new-task row (task + project handled).
-const NEW_ROW_FILL = COLUMNS.length - 3;
 
 export function WorksheetTable({
   tasks,
@@ -44,7 +54,7 @@ export function WorksheetTable({
 }: WorksheetTableProps) {
   return (
     <div className="border-border bg-card max-h-[calc(100dvh-15rem)] overflow-auto rounded-xl border">
-      <table className="w-full min-w-[1040px] border-collapse text-sm">
+      <table className="w-full border-collapse text-sm md:min-w-[1040px]">
         <thead className="bg-card sticky top-0 z-10">
           <tr className="border-border text-muted-foreground border-b text-left text-xs tracking-wide uppercase">
             {COLUMNS.map((column) => (
@@ -83,7 +93,6 @@ export function WorksheetTable({
             projects={projects}
             date={date}
             defaultProjectId={defaultProjectId}
-            fillColumns={NEW_ROW_FILL}
           />
         </tbody>
         {tasks.length > 0 ? (

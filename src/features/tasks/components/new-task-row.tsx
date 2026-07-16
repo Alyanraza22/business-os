@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 
 import { createWorksheetTask } from "../actions";
 import type { ProjectOption } from "../types";
+import { HIDDEN_ON_MOBILE } from "./worksheet-table";
 
 const CELL_INPUT =
   "h-9 w-full rounded-md border border-transparent bg-transparent px-2 text-sm outline-none transition-colors hover:border-border focus:border-ring focus:bg-background";
@@ -25,14 +26,12 @@ interface NewTaskRowProps {
   projects: ProjectOption[];
   date: string;
   defaultProjectId: string;
-  fillColumns: number;
 }
 
 export function NewTaskRow({
   projects,
   date,
   defaultProjectId,
-  fillColumns,
 }: NewTaskRowProps) {
   const [title, setTitle] = useState("");
   const [projectId, setProjectId] = useState(defaultProjectId || NONE);
@@ -80,7 +79,7 @@ export function NewTaskRow({
           aria-label="New task name"
         />
       </td>
-      <td className="px-1">
+      <td className={cn("px-1", HIDDEN_ON_MOBILE)}>
         <Select value={projectId} onValueChange={setProjectId}>
           <SelectTrigger
             className="hover:border-border h-9 w-full gap-1 border-transparent bg-transparent px-2 shadow-none"
@@ -98,7 +97,15 @@ export function NewTaskRow({
           </SelectContent>
         </Select>
       </td>
-      <td colSpan={fillColumns} />
+      {/* Spacers mirror the header cell-for-cell — including which ones drop
+          out on mobile — so the grid never misaligns. */}
+      <td className={HIDDEN_ON_MOBILE} />
+      <td />
+      <td className={HIDDEN_ON_MOBILE} />
+      <td className={HIDDEN_ON_MOBILE} />
+      <td />
+      <td className={HIDDEN_ON_MOBILE} />
+      <td />
     </tr>
   );
 }

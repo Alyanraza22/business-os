@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/typography";
+import { PlannerActions } from "@/features/tasks/components/planner-actions";
 import { WorksheetDateNav } from "@/features/tasks/components/worksheet-date-nav";
 import { WorksheetTable } from "@/features/tasks/components/worksheet-table";
 import { WorksheetToolbar } from "@/features/tasks/components/worksheet-toolbar";
@@ -75,6 +76,9 @@ export default async function DailyPlannerPage({
         description="Your day, one sheet at a time."
       />
       <WorksheetDateNav date={date} />
+      <div className="mb-3">
+        <PlannerActions date={date} />
+      </div>
       <WorksheetToolbar projects={projects} />
       <WorksheetTable
         tasks={tasks}

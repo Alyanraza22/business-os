@@ -172,7 +172,7 @@ export function WorksheetRow({
         />
       </td>
 
-      <td className="px-1">
+      <td className="hidden px-1 md:table-cell">
         <Select value={projectId} onValueChange={changeProject}>
           <SelectTrigger className={CELL_SELECT} aria-label="Project">
             <SelectValue />
@@ -188,7 +188,7 @@ export function WorksheetRow({
         </Select>
       </td>
 
-      <td className="px-1">
+      <td className="hidden px-1 md:table-cell">
         <Select
           value={projectTaskId}
           onValueChange={changeProjectTask}
@@ -231,7 +231,7 @@ export function WorksheetRow({
         </Select>
       </td>
 
-      <td className="px-1">
+      <td className="hidden px-1 md:table-cell">
         <Select
           value={priority}
           onValueChange={(value) => {
@@ -254,7 +254,7 @@ export function WorksheetRow({
         </Select>
       </td>
 
-      <td className="px-1">
+      <td className="hidden px-1 md:table-cell">
         <input
           type="number"
           min={0}
@@ -278,7 +278,7 @@ export function WorksheetRow({
         />
       </td>
 
-      <td className="px-1">
+      <td className="hidden px-1 md:table-cell">
         <input
           defaultValue={task.description ?? ""}
           onBlur={commitNotes}
