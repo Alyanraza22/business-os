@@ -28,6 +28,8 @@ import {
 } from "@/features/dashboard/queries";
 import { OnboardingChecklist } from "@/features/onboarding/components/onboarding-checklist";
 import { getOnboardingProgress } from "@/features/onboarding/queries";
+import { NextUpCard } from "@/features/priority/components/next-up-card";
+import { getCommandCenter } from "@/features/priority/queries";
 import { getCurrencySymbol } from "@/lib/format";
 
 export const metadata: Metadata = {
@@ -36,12 +38,17 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const [{ stats, weeklyHours, monthlyRevenue, currency }, overview, setup] =
-    await Promise.all([
-      getDashboardData(),
-      getDashboardOverview(),
-      getOnboardingProgress(),
-    ]);
+  const [
+    { stats, weeklyHours, monthlyRevenue, currency },
+    overview,
+    setup,
+    commandCenter,
+  ] = await Promise.all([
+    getDashboardData(),
+    getDashboardOverview(),
+    getOnboardingProgress(),
+    getCommandCenter(),
+  ]);
   const symbol = getCurrencySymbol(currency);
   const dateLabel = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -62,6 +69,8 @@ export default async function DashboardPage() {
       <QuickActions />
 
       <OnboardingChecklist progress={setup} />
+
+      <NextUpCard data={commandCenter} />
 
       <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2">

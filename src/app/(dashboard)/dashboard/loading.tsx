@@ -17,6 +17,19 @@ export default function DashboardLoading() {
         ))}
       </div>
 
+      {/* Next up */}
+      <Card className="mb-4">
+        <CardContent className="flex items-start gap-4 p-5">
+          <Skeleton className="size-10 shrink-0 rounded-lg" />
+          <div className="flex flex-1 flex-col gap-2">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-5 w-64" />
+            <Skeleton className="h-4 w-40" />
+          </div>
+          <Skeleton className="h-8 w-20 shrink-0 rounded-md" />
+        </CardContent>
+      </Card>
+
       {/* Focus + insights */}
       <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
