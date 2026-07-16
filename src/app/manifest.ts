@@ -19,7 +19,8 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: "/dashboard",
     scope: "/",
     display: "standalone",
-    orientation: "portrait-primary",
+    // No orientation lock — this is a desktop-first workspace that also has to
+    // stay usable on a tablet in landscape.
     background_color: "#090909",
     theme_color: "#090909",
     categories: ["productivity", "business"],
